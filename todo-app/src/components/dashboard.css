@@ -15,14 +15,13 @@
 #taskname{
     width:250px;
     height:38px;
-    /* margin-right:10px; */
     border-radius:8px;
     text-align:center;
+    font-size:18px;
 }
 #addBtn{
     height:45px;
     width:90px;
-    /* margin-left:10px */
 }
 #tasklist{
     display:flex;
@@ -45,7 +44,7 @@
 }
 #input-section {
     display: flex;
-    align-items: center; /* This vertically centers children */
+    align-items: center;
     gap: 40px;     
 }
 

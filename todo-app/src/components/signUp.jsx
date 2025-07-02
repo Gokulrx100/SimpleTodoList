@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import "./signup.css"
+import "./signup.css";
 function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -13,14 +13,15 @@ function SignUp() {
       })
       .then((response) => {
         window.location = "/signin";
-      }).catch(err=>{
-        alert(err.response.data.message);
       })
+      .catch((err) => {
+        alert(err.response.data.message);
+      });
   };
 
-  const switchContainer=()=>{
-    window.location="/signin"
-  }
+  const switchContainer = () => {
+    window.location = "/signin";
+  };
 
   return (
     <div id="signup-container">
@@ -38,10 +39,13 @@ function SignUp() {
         id="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        autoComplete="off"
       />
       <button onClick={Signup}>Sign Up</button>
       <p>Already have an account?</p>
-      <button onClick={switchContainer} id="switchBtn">Sign In</button>
+      <button onClick={switchContainer} id="switchBtn">
+        Sign In
+      </button>
     </div>
   );
 }
