@@ -4,6 +4,10 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require("./model/users");
+const bcrypt=require("bcrypt");
+const {z}=require("zod");
+const {signupSchema,signinSchema,todoSchema}=require("./validation/validation");
+const saltRounds=10;
 async function startServer() {
   try {
     await mongoose.connect(
@@ -40,35 +44,55 @@ function Auth(req, res, next) {
 
 app.post("/signup", async (req, res) => {
   try {
+    signupSchema.parse(req.body);
     let { username, password } = req.body;
     let user = await User.findOne({ username });
     if (user) {
       return res.status(401).json({ message: "User already exists" });
     }
-    let newUser = new User({ username, password, todos: [] });
+    let hashedPassword=await bcrypt.hash(password,saltRounds);
+    let newUser = new User({ username,password:hashedPassword, todos: [] });
     await newUser.save();
-    res.json({ message: users });
+    res.json({ message: "user created" });
   } catch (error) {
+    if(error instanceof z.ZodError){
+      let errMessage=error.errors.map(e=>e.message);
+      return res.status(400).json({message:"validation error",errors:errMessage});
+    }
+    else{
     res.status(500).json({ message: "Server Error" });
+    }
   }
 });
 
 app.post("/signin", async (req, res) => {
   try {
+    signinSchema.parse(req.body);
     let { username, password } = req.body;
-    let user = await User.findOne({ username, password });
+    let user = await User.findOne({ username});
     if (!user) {
-      return res.status(401).json({ message: "invalid credentials" });
+      return res.status(401).json({ message: "invalid Username" });
+    }
+    let isMatch=await bcrypt.compare(password,user.password);
+    if(!isMatch){
+      return res.status(401).json({message:"Invalid Password"})
     }
     let token = jwt.sign(username, secret);
     res.json({ message: "Signin successful", token: token });
   } catch (error) {
+    if(error instanceof z.ZodError){
+      let errMessage=error.errors.map(e=>e.message);
+      return res.status(400).json({message:"validation error",errors:errMessage});
+    }
+    else{
     res.status(500).json({ message: "Server Error" });
+    }
   }
 });
 
 app.post("/todo", Auth, async (req, res) => {
   try {
+    todoSchema.parse(req.body);
     let { taskname } = req.body;
     let username = req.username;
     let user = await User.findOne({ username });
@@ -77,9 +101,15 @@ app.post("/todo", Auth, async (req, res) => {
     }
     user.todos.push({ taskname });
     await user.save();
-    res.json({ message: "task addded" });
+    res.json({ message: "task addded",todo:user.todos });
   } catch (error) {
+    if(error instanceof z.ZodError){
+      let errMessage=error.errors.map(e=>e.message);
+      return res.status(400).json({message:"validation error",errors:errMessage});
+    }
+    else{
     res.status(500).json({ message: "Server Error" });
+    }
   }
 });
 
@@ -90,7 +120,7 @@ app.get("/todos", Auth, async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-    res.json({ todo: user.todos.map((t) => t.taskname) });
+    res.json({ todo: user.todos});
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
@@ -98,17 +128,17 @@ app.get("/todos", Auth, async (req, res) => {
 
 app.delete("/deltodo", Auth, async (req, res) => {
   try {
-    let { taskname } = req.body;
+    let { id } = req.body;
     let username = req.username;
     let user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ message: "Error deleting todo" });
     }
-    user.todos = user.todos.filter((todo) => todo.taskname != taskname);
+    user.todos = user.todos.filter((todo) => todo._id.toString() != id);
     await user.save();
     res.json({
       message: "task removed",
-      todo: user.todos.map((t) => taskname),
+      todo: user.todos
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });

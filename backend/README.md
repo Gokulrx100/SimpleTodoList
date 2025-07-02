@@ -1,13 +1,13 @@
 # Simple Todo List Backend
 
-This is the backend API for the Simple Todo List application, built with **Node.js** and **Express**.
+This is the backend API for the Simple Todo List application, built with **Node.js**, **Express**, and **MongoDB** (via Mongoose).
 
 ## Features
 
 - User authentication (Sign Up & Sign In) using JWT
-- Add, view, and delete todo tasks per user
+- Passwords securely hashed with bcrypt
+- Add, view, and delete todo tasks per user (todos stored in MongoDB)
 - CORS enabled for frontend-backend communication
-- In-memory storage (no database required for demo)
 
 ## Getting Started
 
@@ -15,6 +15,7 @@ This is the backend API for the Simple Todo List application, built with **Node.
 
 - [Node.js](https://nodejs.org/) (v18 or above recommended)
 - [npm](https://www.npmjs.com/)
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account or local MongoDB instance
 
 ### Installation
 
@@ -28,6 +29,10 @@ This is the backend API for the Simple Todo List application, built with **Node.
     ```sh
     npm install
     ```
+
+3. Configure MongoDB connection:
+    - The connection string is set in `index.js`.  
+      Update it if you use your own MongoDB credentials or database.
 
 ### Running the Server
 
@@ -48,17 +53,23 @@ The server will run on [http://localhost:3000](http://localhost:3000).
   **Body:** `{ "username": "user", "password": "pass" }`
 
 - `POST /todo` — Add a todo (requires JWT in headers)  
+  **Headers:** `{ "token": "<JWT>" }`  
   **Body:** `{ "taskname": "Task" }`
 
-- `GET /todos` — Get all todos for the authenticated user
+- `GET /todos` — Get all todos for the authenticated user  
+  **Headers:** `{ "token": "<JWT>" }`  
+  **Response:** `{ "todo": [ { "_id": "...", "taskname": "Task" }, ... ] }`
 
-- `DELETE /deltodo` — Delete a todo (requires JWT in headers)  
-  **Body:** `{ "taskname": "Task" }`
+- `DELETE /deltodo` — Delete a todo by ID (requires JWT in headers)  
+  **Headers:** `{ "token": "<JWT>" }`  
+  **Body:** `{ "id": "<todo_id>" }`
 
 ## Notes
 
-- This backend uses in-memory storage; data will be lost when the server restarts.
-- For production, consider adding a database and environment variable support.
+- All todos are stored per user in MongoDB.
+- Passwords are hashed using bcrypt before storage.
+- JWT is required for all todo operations.
+- For production, use environment variables for secrets and DB connection strings.
 
 ## License
 

@@ -4,9 +4,10 @@ This is the frontend for the Simple Todo List application, built with **React** 
 
 ## Features
 
-- User Sign Up and Sign In
-- Add, view, and delete todo tasks
+- User Sign Up and Sign In (with validation and error feedback)
+- Add, view, search, and delete todo tasks
 - Dashboard to manage your todos
+- Responsive UI with modular React components
 - Communicates with a backend API for authentication and data
 
 ## Getting Started
@@ -54,18 +55,20 @@ yarn build
 ## Project Structure
 
 - `src/` - React source code
-  - `components/` - UI components (SignIn, SignUp, Dashboard, etc.)
+  - `components/` - UI components (SignIn, SignUp, Dashboard, Search, TodoInput, TodoList, LogOut, etc.)
   - `App.jsx` - Main app component and routing
 - `public/` - Static assets
 
 ## Environment Variables
 
-If you need to configure API endpoints, create a `.env` file in the root and add your variables (see Vite docs for details).
+If you need to configure API endpoints, create a `.env` file in the root and add your variables (see [Vite environment variables docs](https://vitejs.dev/guide/env-and-mode.html) for details).
+
+## Usage Notes
+
+- This frontend is designed to work with the [SimpleTodoList backend](../backend).
+- Make sure the backend server is running and accessible at the expected API URL (default: `http://localhost:3000`).
+- All authentication and todo operations require a valid JWT token, which is managed automatically after sign in.
 
 ## License
 
 MIT
-
----
-
-**Note:** This frontend is designed to work with the [SimpleTodoList backend](../backend)

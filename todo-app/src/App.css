@@ -41,12 +41,12 @@
   color: #888;
 }
 
-.todos{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.todos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-.one{
-  display:flex;
-  gap:10px;
+.one {
+  display: flex;
+  gap: 10px;
 }
