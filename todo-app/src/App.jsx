@@ -4,6 +4,7 @@ import {Route,Routes,BrowserRouter,Navigate} from "react-router"
 import SignIn from './components/signIn'
 import SignUp from './components/signUp'
 import Dashboard from './components/dashboard'
+import Error from './components/Error'
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="signup" element={<SignUp/>} />
         <Route path="signin" element={<SignIn/>} />
         <Route path="dashboard" element={<Dashboard/>} />
+        <Route path="*" element={<Error/>} />
       </Routes>
     </BrowserRouter>
   )
