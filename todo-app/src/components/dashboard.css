@@ -48,3 +48,9 @@
     align-items: center; /* This vertically centers children */
     gap: 40px;     
 }
+
+#logout-button{
+    position:relative;
+    bottom:300px;
+    left:170px;
+}

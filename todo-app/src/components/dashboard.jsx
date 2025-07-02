@@ -57,11 +57,17 @@ function Dashboard() {
       })
   }
 
+  const logout=()=>{
+    localStorage.removeItem("token");
+    window.location="/signin";
+  }
+
   useEffect(() => {
     fetchtodo();
   }, []);
 
   return (
+    <div >
     <div id="todo-container">
       <h2 id="heading">TODO List</h2>
       <div id="input-section">
@@ -81,6 +87,8 @@ function Dashboard() {
           </div>
         ))}
       </div>
+    </div>
+    <button id="logout-button" onClick={logout}>LogOut</button>
     </div>
   );
 }
